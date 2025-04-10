@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Order Summary</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      background-color: #f8f8f8;
+    }
+    .container {
+      width: 100%;
+      max-width: 1024px;
+      margin: 0 auto;
+      padding: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+    .box {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      flex: 1 1 300px;
+      min-width: 280px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      font-weight: bold;
+    }
+    .input-field {
+      width: 100%;
+      padding: 8px;
+      margin: 5px 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    .button {
+      width: 100%;
+      padding: 12px 24px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    .button:hover {
+      background-color: #0056b3;
+    }
+    .botbtns ul {
+      padding: 0;
+      list-style: none;
+    }
+    .botbtns ul li {
+      margin-top: 10px;
+    }
+    .navbar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 60px;
+      background: #00d4aa;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .logo {
+      font-size: 28px;
+      font-weight: bold;
+      color: #fff;
+    }
+  </style>
+  <script>
+    // Same script as original
+    function getOrder() {
+      return JSON.parse(localStorage.getItem('order')) || [];
+    }
+    function saveOrder(order) {
+      localStorage.setItem('order', JSON.stringify(order));
+    }
+    function updateTotal() {
+      const qtyInputs = document.querySelectorAll('.qty');
+      const priceCells = document.querySelectorAll('.item-price');
+      let total = 0;
+      qtyInputs.forEach((input, index) => {
+        const quantity = parseInt(input.value) || 0;
+        const price = parseFloat(input.dataset.price) || 0;
+        const itemTotal = quantity * price;
+        priceCells[index].innerText = `₹${itemTotal.toFixed(2)}`;
+        total += itemTotal;
+      });
+      document.getElementById('total-price').innerText = `₹${total.toFixed(2)}`;
+    }
+    function renderOrderItems() {
+      const order = getOrder();
+      const tableBody = document.getElementById('order-items');
+      tableBody.innerHTML = "";
+      order.forEach(item => {
+        const row = document.createElement('tr');
+        const nameTd = document.createElement('td');
+        nameTd.innerText = item.name;
+        const qtyTd = document.createElement('td');
+        const input = document.createElement('input');
+        input.type = 'number';
+        input.min = 0;
+        input.value = item.quantity;
+        input.classList.add('input-field', 'qty');
+        input.dataset.price = item.price;
+        input.addEventListener('input', updateTotal);
+        qtyTd.appendChild(input);
+        const priceTd = document.createElement('td');
+        priceTd.classList.add('item-price');
+        priceTd.innerText = `₹${(item.quantity * item.price).toFixed(2)}`;
+        row.appendChild(nameTd);
+        row.appendChild(qtyTd);
+        row.appendChild(priceTd);
+        tableBody.appendChild(row);
+      });
+      updateTotal();
+    }
+    function placeOrder() {
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      if (!name || !email || !phone) {
+        alert("Please fill all fields before placing the order.");
+        return;
+      }
+      const qtyInputs = document.querySelectorAll('.qty');
+      let updatedOrder = [];
+      qtyInputs.forEach((input, index) => {
+        const quantity = parseInt(input.value) || 0;
+        const price = parseFloat(input.dataset.price) || 0;
+        const row = input.closest('tr');
+        const itemName = row.querySelector('td').innerText;
+        if (quantity > 0) {
+          updatedOrder.push({ name: itemName, quantity, price });
+        }
+      });
+      localStorage.setItem('order', JSON.stringify(updatedOrder));
+      localStorage.setItem('customerName', name);
+      localStorage.setItem('customerEmail', email);
+      localStorage.setItem('customerPhone', phone);
+      window.location.href = "ppg2.html";
+    }
+    window.onload = renderOrderItems;
+  </script>
+</head>
+<body>
+  <div class="navbar"><div class="logo">Order</div></div>
+  <div class="container">
+    <div class="box">
+      <h2>Order Details</h2>
+      <table>
+        <thead><tr><th>Item</th><th>Quantity</th><th>Price</th></tr></thead>
+        <tbody id="order-items"></tbody>
+        <tfoot><tr><th>Total</th><th colspan="2" id="total-price">₹0.00</th></tr></tfoot>
+      </table>
+    </div>
+    <div class="box">
+      <h2>Customer Information</h2>
+      <input type="text" class="input-field" placeholder="Full Name" id="name">
+      <input type="email" class="input-field" placeholder="Email Address" id="email">
+      <input type="text" class="input-field" placeholder="Phone" id="phone">
+      <div class="botbtns">
+        <ul>
+          <li><a href="ppg2.html"><button class="button" onclick="placeOrder()">Place Order and Proceed to Payment</button></a></li>
+          <li><a href="mainmenu.html"><button class="button">Back to Menu</button></a></li>
+          <li><a href="index.html"><button class="button">Home</button></a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Main Menu</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      font-family: Arial, sans-serif;
+    }
+    .container {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    .top-frame {
+      flex: 0 0 12%;
+    }
+    .content-area {
+      flex: 1;
+      display: flex;
+      flex-direction: row;
+    }
+    .sidebar-frame {
+      flex: 0 0 30%;
+      overflow-y: auto;
+    }
+    .menu-frame {
+      flex: 1;
+      overflow-y: auto;
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    @media (max-width: 768px) {
+      .content-area {
+        flex-direction: column;
+      }
+      .sidebar-frame {
+        flex: none;
+        height: auto;
+      }
+      .menu-frame {
+        flex: 1;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="top-frame">
+      <iframe src="top.html"></iframe>
+    </div>
+    <div class="content-area">
+      <div class="sidebar-frame">
+        <iframe src="sidebar.html"></iframe>
+      </div>
+      <div class="menu-frame">
+        <iframe name="menuct" src="menuct.html"></iframe>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

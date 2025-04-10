@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Payment Page</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f4f4f4;
+    }
+    .container {
+      width: 100%;
+      max-width: 1024px;
+      margin: 0 auto;
+      padding: 16px;
+      box-sizing: border-box;
+    }
+    .box {
+      background: white;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    th {
+      background-color: #f0f0f0;
+    }
+    .total {
+      font-weight: bold;
+      font-size: 18px;
+      text-align: right;
+    }
+    .payment-section {
+      margin-top: 30px;
+      padding: 20px;
+      border: 2px solid #eee;
+      border-radius: 12px;
+      background-color: #f9f9f9;
+    }
+    #pay-button {
+      width: 100%;
+      margin-top: 15px;
+      padding: 10px 25px;
+      font-size: 1em;
+      font-weight: bold;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    #pay-button:hover {
+      background-color: #218838;
+    }
+    .ppgbutton {
+      font-size: 15px;
+      width: 100%;
+      padding: 12px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Payment Page</h1>
+    <div class="box">
+      <h2>Customer Details</h2>
+      <p><strong>Name:</strong> <span id="cust-name"></span></p>
+      <p><strong>Email:</strong> <span id="cust-email"></span></p>
+      <p><strong>Phone:</strong> <span id="cust-phone"></span></p>
+    </div>
+
+    <div class="box">
+      <h2>INVOICE</h2>
+      <table>
+        <thead><tr><th>Item</th><th>Quantity</th><th>Price</th></tr></thead>
+        <tbody id="order-summary"></tbody>
+        <tfoot><tr><td colspan="2" class="total">Total:</td><td id="total-bill" class="total">₹0.00</td></tr></tfoot>
+      </table>
+      <div class="payment-section">
+        <h3>Select Payment Method:</h3>
+        <label><input type="radio" name="payment-method" value="Cash" checked> Cash</label>
+        <label><input type="radio" name="payment-method" value="Credit Card"> Credit Card</label>
+        <label><input type="radio" name="payment-method" value="Online"> Online</label>
+        <button id="pay-button">Pay</button>
+      </div>
+    </div>
+
+    <button class="ppgbutton" onclick="location.href='ordermodule.html'">Back to Order Page</button>
+    <button class="ppgbutton" onclick="location.href='mainmenu.html'">Back to Menu</button>
+    <button class="ppgbutton" onclick="location.href='index.html'">Home</button>
+  </div>
+
+  <script>
+    window.onload = function () {
+      const name = localStorage.getItem('customerName') || 'N/A';
+      const email = localStorage.getItem('customerEmail') || 'N/A';
+      const phone = localStorage.getItem('customerPhone') || 'N/A';
+      document.getElementById('cust-name').innerText = name;
+      document.getElementById('cust-email').innerText = email;
+      document.getElementById('cust-phone').innerText = phone;
+
+      const order = JSON.parse(localStorage.getItem('order')) || [];
+      const table = document.getElementById('order-summary');
+      let total = 0;
+      order.forEach(item => {
+        const row = document.createElement('tr');
+        const itemTotal = item.quantity * item.price;
+        total += itemTotal;
+        row.innerHTML = `<td>${item.name}</td><td>${item.quantity}</td><td>₹${itemTotal.toFixed(2)}</td>`;
+        table.appendChild(row);
+      });
+      document.getElementById('total-bill').innerText = `₹${total.toFixed(2)}`;
+
+      document.getElementById('pay-button').onclick = function () {
+        if (order.length === 0 || total === 0) {
+          alert("No items in the order. Please add items before proceeding to payment.");
+          return;
+        }
+        const selectedMethod = document.querySelector('input[name="payment-method"]:checked').value;
+        alert(`Payment Successful via ${selectedMethod}!`);
+        window.location.href = "index.html";
+      };
+
+      localStorage.removeItem('order');
+      localStorage.removeItem('customerName');
+      localStorage.removeItem('customerEmail');
+      localStorage.removeItem('customerPhone');
+    };
+  </script>
+</body>
+</html>
