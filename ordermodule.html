@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Summary</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f8f8f8;
+        }
+        .container {
+            display: flex;
+            gap: 20px;
+        }
+        .box {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+     
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            font-weight: bold;
+        }
+        .input-field {
+            width: 95%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .button {
+            width: 100%;
+            padding: 12px 24px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            
+           
+            font-size: 16px;
+        }
+        .botbtns ul li{
+            list-style: none;
+
+            padding: 5px 0;
+            font-size: 18px;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        .navbar {
+    display: flex;
+    align-items: center;
+ 
+    height: 30px;
+    width: 750px;
+    padding: 15px 40px;
+    background: #00d4aa;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    border-radius: 12px;
+    
+}
+.logo {
+    font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: 28px;
+    font-weight: bold;
+    color: #fff;
+    text-align: center;
+    width: 100%;
+}
+
+    </style>
+    <script>
+       function getOrder() {
+    return JSON.parse(localStorage.getItem('order')) || [];
+}
+
+function saveOrder(order) {
+    localStorage.setItem('order', JSON.stringify(order));
+}
+
+function updateTotal() {
+    const qtyInputs = document.querySelectorAll('.qty');
+    const priceCells = document.querySelectorAll('.item-price');
+    let total = 0;
+
+    qtyInputs.forEach((input, index) => {
+        const quantity = parseInt(input.value) || 0;
+        const price = parseFloat(input.dataset.price) || 0;
+        const itemTotal = quantity * price;
+
+        priceCells[index].innerText = `₹${itemTotal.toFixed(2)}`;
+        total += itemTotal;
+    });
+
+    document.getElementById('total-price').innerText = `₹${total.toFixed(2)}`;
+}
+
+function renderOrderItems() {
+    const order = getOrder();
+    const tableBody = document.getElementById('order-items');
+    tableBody.innerHTML = ""; // Clear existing
+
+    order.forEach(item => {
+        const row = document.createElement('tr');
+
+        const nameTd = document.createElement('td');
+        nameTd.innerText = item.name;
+
+        const qtyTd = document.createElement('td');
+        const input = document.createElement('input');
+        input.type = 'number';
+        input.min = 0;
+        input.value = item.quantity;
+        input.classList.add('input-field', 'qty');
+        input.dataset.price = item.price;
+        input.addEventListener('input', updateTotal);
+        qtyTd.appendChild(input);
+
+        const priceTd = document.createElement('td');
+        priceTd.classList.add('item-price');
+        priceTd.innerText = `₹${(item.quantity * item.price).toFixed(2)}`;
+
+        row.appendChild(nameTd);
+        row.appendChild(qtyTd);
+        row.appendChild(priceTd);
+
+        tableBody.appendChild(row);
+    });
+
+    updateTotal();
+}
+
+function placeOrder() {
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+
+    if (!name || !email || !phone) {
+        alert("Please fill all fields before placing the order.");
+        return;
+    }
+
+    //  Update order from DOM quantities before saving
+    const qtyInputs = document.querySelectorAll('.qty');
+    let updatedOrder = [];
+
+    qtyInputs.forEach((input, index) => {
+        const quantity = parseInt(input.value) || 0;
+        const price = parseFloat(input.dataset.price) || 0;
+        const row = input.closest('tr');
+        const itemName = row.querySelector('td').innerText;
+
+        if (quantity > 0) {
+            updatedOrder.push({
+                name: itemName,
+                quantity: quantity,
+                price: price
+            });
+        }
+    });
+
+    //  Save updated order to localStorage
+    localStorage.setItem('order', JSON.stringify(updatedOrder));
+
+    //  Save customer details
+    localStorage.setItem('customerName', name);
+    localStorage.setItem('customerEmail', email);
+    localStorage.setItem('customerPhone', phone);
+
+    // Redirect to payment page
+    window.location.href = "ppg.html";
+}
+
+
+window.onload = function () {
+    renderOrderItems();
+
+    
+};
+
+    </script>
+</head>
+<body>
+    <div class="navbar">
+      <div class="logo"> Order</div>
+        
+    </div>
+    <div class="container">
+        <div class="box">
+            <h2>Order Details</h2>
+            <table>
+                <thead>
+                    <tr><th>Item</th><th>Quantity</th><th>Price</th></tr>
+                </thead>
+                <tbody id="order-items">
+                    <!-- JS will dynamically add rows here -->
+                </tbody>
+                <tfoot>
+                    <tr><th>Total</th><th colspan="2" id="total-price">Rs0.00</th></tr>
+                </tfoot>
+            </table>
+            
+           
+        </div>
+        <div><tr></tr>
+            <div class="box">
+                <h2>Customer Information</h2>
+                <input type="text" class="input-field" placeholder="Full Name" id="name">
+                <input type="email" class="input-field" placeholder="Email Address" id="email">
+                <input type="text" class="input-field" placeholder="Phone" id="phone">
+            </div>
+           
+            <div class="botbtns">
+            <ul>
+             
+            <li><a href="ppg2.html">  <button class="button" onclick="placeOrder()">Place Order and Proceed for Payement</button></a></li> 
+     <li>  <a href="mainmenu.html">   <button class="button" >Back to Menu</button></a> </li> 
+    <li>    <a href="index.html"> <button class="button" >Home</button></a> </li> 
+        </ul>
+        </div>
+    </div>
+
+
+</body>
+</html>

@@ -1,0 +1,148 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<title>Staff Dashboard with Correct CSV Totals</title>
+<script src="https://cdn.jsdelivr.net/npm/dexie@3.2.4/dist/dexie.min.js"></script>
+<style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      padding: 20px;
+      background: #f4f6f8;
+      color: #333;
+    }
+
+    h2 {
+      text-align: center;
+    }
+
+    button {
+      display: block;
+      margin: 20px auto;
+      background-color: #007bff;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+<div style="text-align:center;margin-top:40px;">
+<h3>🔍 Search Customer Bill</h3>
+<input id="searchInput" placeholder="Enter name, email or phone" style="width:300px;padding:10px;" type="text"/>
+<button onclick="searchCustomer()">Search</button>
+<div id="searchResult" style="margin-top:20px;"></div>
+</div>
+<h2>📤 Export Orders to CSV with Correct Totals</h2>
+<button onclick="exportAllOrders()">Download Corrected Order History (CSV)</button>
+<script>
+    const db = new Dexie("OrderDB");
+    db.version(1).stores({ orders: "++id,name,email,phone" });
+
+    async function exportAllOrders() {
+      const orders = await db.orders.toArray();
+      const rows = [["Name", "Email", "Phone", "Item", "Quantity", "Price", "Total (Qty×Price)", "Timestamp"]];
+
+      orders.forEach(order => {
+        const timestamp = order.timestamp || new Date().toISOString();
+        const items = order.order || [];
+        items.forEach(item => {
+          const itemTotal = (item.quantity || 0) * (item.price || 0);
+          rows.push([
+            order.name || "",
+            order.email || "",
+            order.phone || "",
+            item.name || "",
+            item.quantity || 0,
+            item.price || 0,
+            itemTotal.toFixed(2),
+            timestamp
+          ]);
+        });
+      });
+
+      if (rows.length === 1) {
+        alert("No orders found.");
+        return;
+      }
+
+      const csvContent = "data:text/csv;charset=utf-8," + rows.map(e => e.join(",")).join("\n");
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", "orders_with_correct_totals.csv");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+  </script>
+
+<script>
+  async function searchCustomer() {
+    const input = document.getElementById("searchInput").value.trim().toLowerCase();
+    const resultDiv = document.getElementById("searchResult");
+    resultDiv.innerHTML = "";
+
+    if (!input) {
+      resultDiv.innerHTML = "<p>Please enter a name, email or phone number.</p>";
+      return;
+    }
+
+    const orders = await db.orders.toArray();
+    const matched = orders.filter(order =>
+      order.name.toLowerCase().includes(input) ||
+      order.email.toLowerCase().includes(input) ||
+      order.phone.includes(input)
+    );
+
+    if (matched.length === 0) {
+      resultDiv.innerHTML = "<p>No orders found for the given customer.</p>";
+      return;
+    }
+
+    matched.forEach(order => {
+      const date = new Date(order.timestamp).toLocaleString();
+      const container = document.createElement("div");
+      container.style = "background:#fff;padding:15px;margin-top:10px;border-radius:8px;box-shadow:0 2px 6px rgba(0,0,0,0.05);";
+
+      container.innerHTML = `
+        <strong>${order.name}</strong> (${order.phone})<br/>
+        <small>${order.email} — ${date}</small>
+        <table style="width:100%;margin-top:10px;border-collapse:collapse;">
+          <thead>
+            <tr style="background:#eee;">
+              <th style="padding:6px;border:1px solid #ccc;">Item</th>
+              <th style="padding:6px;border:1px solid #ccc;">Qty</th>
+              <th style="padding:6px;border:1px solid #ccc;">Price</th>
+              <th style="padding:6px;border:1px solid #ccc;">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${order.order.map(item => `
+              <tr>
+                <td style="padding:6px;border:1px solid #ccc;">${item.name}</td>
+                <td style="padding:6px;border:1px solid #ccc;">${item.quantity}</td>
+                <td style="padding:6px;border:1px solid #ccc;">₹${item.price}</td>
+                <td style="padding:6px;border:1px solid #ccc;">₹${(item.quantity * item.price).toFixed(2)}</td>
+              </tr>
+            `).join("")}
+          </tbody>
+        </table>
+        <div style="text-align:right;font-weight:bold;margin-top:8px;">Total: ₹${order.total}</div>
+      `;
+      resultDiv.appendChild(container);
+    });
+  }
+</script>
+</body>
+</html>

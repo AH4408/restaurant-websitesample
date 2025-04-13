@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Payment Page</title>
+<style>
+     .ppgbutton {
+    font-size: 15px;
+    width: 45%;
+    padding: 12px 24px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+   }
+   .ppgbuttonout ul li{
+            list-style: none;
+
+            padding: 5px 0;
+            font-size: 18px;
+        }
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f4f4f4;
+    }
+    .box {
+      background: white;
+      padding: 20px;
+      margin-bottom: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 10px;
+      text-align: left;
+      border-bottom: 1px solid #ddd;
+    }
+    th {
+      background-color: #f0f0f0;
+    }
+    .total {
+      font-weight: bold;
+      font-size: 18px;
+      text-align: right;
+    }
+    .payment-section {
+    justify-content:center;
+    margin-top: 30px;
+    padding: 20px;
+    border: 2px solid #eee;
+    border-radius: 12px;
+    max-width: 400px;
+    background-color: #f9f9f9;
+  }
+
+  .payment-section h3 {
+    margin-bottom: 15px;
+    font-size: 1.2em;
+    color: #333;
+  }
+
+  .payment-section label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 1em;
+    color: #444;
+    cursor: pointer;
+  }
+
+  #pay-button {
+    width:100%;
+    margin-top: 15px;
+    padding: 10px 25px;
+    font-size: 1em;
+    font-weight: bold;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  #pay-button:hover {
+    background-color: #218838;
+  }
+  
+/* Make the entire page content centered and consistent on all screens */
+.container {
+  max-width: 100%;
+  margin: auto;
+  padding: 10px;
+  background-color: white;
+}
+
+/* Responsive buttons layout */
+.ppgbuttonout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.ppgbuttonout ul {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  text-align: center;
+}
+
+.ppgbuttonout ul li {
+  list-style: none;
+  margin: 5px 0;
+}
+
+/* Make buttons full width and consistent */
+.ppgbutton {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* Responsive payment section */
+.payment-section {
+  margin: 0 auto;
+  max-width: 60%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 600px) {
+  h1, h2, h3, label, p, td, th {
+    font-size: 16px;
+  }
+
+  .payment-section {
+    padding: 10px;
+  }
+
+  #pay-button {
+    font-size: 1em;
+    
+  }
+}
+
+</style>
+</head>
+<body>
+<div class="container">
+<h1>Payment Page</h1>
+<div class="box">
+<h2>Customer Details</h2>
+<p><strong>Name:</strong> <span id="cust-name"></span></p>
+<p><strong>Email:</strong> <span id="cust-email"></span></p>
+<p><strong>Phone:</strong> <span id="cust-phone"></span></p>
+</div>
+<div class="box">
+<h2>INVOICE</h2>
+<table>
+<thead>
+<tr><th>Item</th><th>Quantity</th><th>Price</th></tr>
+</thead>
+<tbody id="order-summary">
+<!-- JS will populate this -->
+</tbody>
+<tfoot>
+<tr>
+<td class="total" colspan="2">Total:</td>
+<td class="total" id="total-bill">₹0.00</td>
+</tr>
+</tfoot>
+</table>
+<tr> <div class="payment-section">
+<h3>Select Payment Method:</h3>
+<label><input checked="" name="payment-method" type="radio" value="Cash"/> Cash</label>
+<label><input name="payment-method" type="radio" value="Credit Card"/> Credit Card</label>
+<label> <input name="payment-method" type="radio" value="UPI"/> UPI</label>
+<div id="upi-qr-container" style="display:none; text-align:center; margin:20px;">
+<h4>Scan to Pay with UPI</h4>
+<img alt="UPI QR Code" src="ppg2qr.png"/>
+</div>
+<button id="pay-button">Pay</button>
+</div></tr>
+</div>
+<div class="ppgbuttonout">
+<ul>
+<a href="ordermodule.html"> <button class="ppgbutton">Back to Order Page</button></a>
+<li> <a href="mainmenu.html"> <button class="ppgbutton">Back to Menu</button></a> </li>
+<li> <a href="index.html"> <button class="ppgbutton">Home</button></a> </li>
+</ul>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/dexie@3.2.4/dist/dexie.min.js"></script>
+<script>
+  const db = new Dexie("OrderDB");
+  db.version(1).stores({ orders: "++id,name,email,phone" });
+
+  window.onload = function () {
+    const name = localStorage.getItem('customerName') || 'N/A';
+    const email = localStorage.getItem('customerEmail') || 'N/A';
+    const phone = localStorage.getItem('customerPhone') || 'N/A';
+
+    document.getElementById('cust-name').innerText = name;
+    document.getElementById('cust-email').innerText = email;
+    document.getElementById('cust-phone').innerText = phone;
+
+    const order = JSON.parse(localStorage.getItem('order')) || [];
+    const table = document.getElementById('order-summary');
+    let total = 0;
+
+    order.forEach(item => {
+      const row = document.createElement('tr');
+      const itemTotal = item.quantity * item.price;
+      total += itemTotal;
+
+      row.innerHTML = `
+        <td>${item.name}</td>
+        <td>${item.quantity}</td>
+        <td>₹${itemTotal.toFixed(2)}</td>
+      `;
+      table.appendChild(row);
+    });
+
+    document.getElementById('total-bill').innerText = `₹${total.toFixed(2)}`;
+
+    const payBtn = document.getElementById('pay-button');
+    payBtn.addEventListener('click', async () => {
+      if (order.length === 0 || total === 0) {
+        alert("No items in the order. Please add items before proceeding to payment.");
+        return;
+      }
+
+      const selectedMethod = document.querySelector('input[name="payment-method"]:checked').value;
+
+      const record = {
+        name, email, phone,
+        order,
+        total,
+        timestamp: new Date().toISOString()
+      };
+
+      await db.orders.add(record);
+
+      fetch("https://script.google.com/macros/s/AKfycbySX47AQ35ZpKYrZ6GHbPrdJwfj7uM7LXq58_Sa2FAWx6xyBiuJYEJ6MsPYDKI9XxL3/exec", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(record)
+      })
+      .then(res => res.text())
+      .then(data => console.log("Sent to Google Sheets:", data))
+      .catch(err => console.error("Failed to send to Google Sheets:", err));
+
+      alert(`Payment Successful via ${selectedMethod}!`);
+      window.location.href = "feedback_form.html";
+    });
+  };
+</script>
+<script>
+  document.querySelectorAll('input[name="payment-method"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+      const qr = document.getElementById("upi-qr-container");
+      if (this.value.toLowerCase() === "upi") {
+        qr.style.display = "block";
+      } else {
+        qr.style.display = "none";
+      }
+    });
+  });
+</script>
+</div>
+</body>
+</html>

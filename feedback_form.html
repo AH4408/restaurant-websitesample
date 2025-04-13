@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+  <title>
+   Feedback Form
+  </title>
+  <link href="style 3.css" rel="stylesheet"/>
+ </head>
+ <body>
+  <div class="container">
+   <h1>
+    We appreciate your feedback!
+   </h1>
+   <form id="feedbackForm">
+    <div class="row">
+     <div class="input-group">
+      <label>
+       Full Name
+      </label>
+      <input required="" type="text"/>
+     </div>
+     <div class="row">
+      <div class="input-group">
+       <label>
+        Email
+       </label>
+       <input placeholder="example@example.com" required="" type="email"/>
+      </div>
+      <div class="input-group">
+       <label>
+        Phone Number
+       </label>
+       <input pattern="[0-9]{10}" placeholder="1234567890" required="" type="tel"/>
+      </div>
+     </div>
+     <div class="row">
+      <div class="input-group">
+       <label>
+        Location You Visited:
+       </label>
+       <select required="">
+        <option value="">
+         Please Select
+        </option>
+        <option>
+         Location A
+        </option>
+        <option>
+         Location B
+        </option>
+       </select>
+      </div>
+      <div class="input-group">
+       <label>
+        Dine In / Take Out:
+       </label>
+       <div class="toggle">
+        <label>
+         <input name="dining" type="radio" value="Dine In"/>
+         Dine In
+        </label>
+        <label>
+         <input name="dining" type="radio" value="Take Out"/>
+         Take Out
+        </label>
+       </div>
+      </div>
+     </div>
+     <div class="row">
+      <div class="input-group">
+       <label>
+        Day Visited:
+       </label>
+       <input required="" type="date"/>
+      </div>
+      <div class="input-group">
+       <label>
+        Time:
+       </label>
+       <input required="" type="time"/>
+      </div>
+     </div>
+     <div class="ratings">
+      <div class="rating-row">
+       <label>
+        Food Quality
+       </label>
+       <div class="options">
+        <label>
+         <input name="food" type="radio" value="Excellent"/>
+         Excellent
+        </label>
+        <label>
+         <input name="food" type="radio" value="Good"/>
+         Good
+        </label>
+        <label>
+         <input name="food" type="radio" value="Average"/>
+         Average
+        </label>
+        <label>
+         <input name="food" type="radio" value="Dissatisfied"/>
+         Dissatisfied
+        </label>
+       </div>
+      </div>
+      <!-- Repeat for each question -->
+      <div class="rating-row">
+       <label>
+        Overall Service Quality
+       </label>
+       <div class="options">
+        <label>
+         <input name="service" type="radio" value="Excellent"/>
+         Excellent
+        </label>
+        <label>
+         <input name="service" type="radio" value="Good"/>
+         Good
+        </label>
+        <label>
+         <input name="service" type="radio" value="Average"/>
+         Average
+        </label>
+        <label>
+         <input name="service" type="radio" value="Dissatisfied"/>
+         Dissatisfied
+        </label>
+       </div>
+      </div>
+      <div class="rating-row">
+       <label>
+        Cleanliness
+       </label>
+       <div class="options">
+        <label>
+         <input name="clean" type="radio" value="Excellent"/>
+         Excellent
+        </label>
+        <label>
+         <input name="clean" type="radio" value="Good"/>
+         Good
+        </label>
+        <label>
+         <input name="clean" type="radio" value="Average"/>
+         Average
+        </label>
+        <label>
+         <input name="clean" type="radio" value="Dissatisfied"/>
+         Dissatisfied
+        </label>
+       </div>
+      </div>
+      <div class="rating-row">
+       <label>
+        Order Accuracy
+       </label>
+       <div class="options">
+        <label>
+         <input name="accuracy" type="radio" value="Excellent"/>
+         Excellent
+        </label>
+        <label>
+         <input name="accuracy" type="radio" value="Good"/>
+         Good
+        </label>
+        <label>
+         <input name="accuracy" type="radio" value="Average"/>
+         Average
+        </label>
+        <label>
+         <input name="accuracy" type="radio" value="Dissatisfied"/>
+         Dissatisfied
+        </label>
+       </div>
+      </div>
+      <div class="rating-row">
+       <label>
+        Speed of Service
+       </label>
+       <div class="options">
+        <label>
+         <input name="speed" type="radio" value="Excellent"/>
+         Excellent
+        </label>
+        <label>
+         <input name="speed" type="radio" value="Good"/>
+         Good
+        </label>
+        <label>
+         <input name="speed" type="radio" value="Average"/>
+         Average
+        </label>
+        <label>
+         <input name="speed" type="radio" value="Dissatisfied"/>
+         Dissatisfied
+        </label>
+       </div>
+      </div>
+      <div class="rating-row">
+       <label>
+        Value
+       </label>
+       <div class="options">
+        <label>
+         <input name="value" type="radio" value="Excellent"/>
+         Excellent
+        </label>
+        <label>
+         <input name="value" type="radio" value="Good"/>
+         Good
+        </label>
+        <label>
+         <input name="value" type="radio" value="Average"/>
+         Average
+        </label>
+        <label>
+         <input name="value" type="radio" value="Dissatisfied"/>
+         Dissatisfied
+        </label>
+       </div>
+      </div>
+      <div class="rating-row">
+       <label>
+        Overall Experience
+       </label>
+       <div class="options">
+        <label>
+         <input name="experience" type="radio" value="Excellent"/>
+         Excellent
+        </label>
+        <label>
+         <input name="experience" type="radio" value="Good"/>
+         Good
+        </label>
+        <label>
+         <input name="experience" type="radio" value="Average"/>
+         Average
+        </label>
+        <label>
+         <input name="experience" type="radio" value="Dissatisfied"/>
+         Dissatisfied
+        </label>
+       </div>
+      </div>
+     </div>
+     <div class="input-group full">
+      <label>
+       Any comments, questions or suggestions?
+      </label>
+      <textarea placeholder="Type here..." rows="4"></textarea>
+     </div>
+     <button class="submit-btn" type="submit">
+      Submit
+     </button>
+    </div>
+   </form>
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/dexie@3.2.4/dist/dexie.min.js">
+  </script>
+  <script>
+   const db = new Dexie("FeedbackDB");
+  db.version(1).stores({
+    feedbacks: "++id,email,phone"
+  });
+
+  window.addEventListener("DOMContentLoaded", function () {
+    const inputs = document.querySelectorAll("input, textarea, select");
+    const email = localStorage.getItem("customerEmail");
+    const phone = localStorage.getItem("customerPhone");
+    const name = localStorage.getItem("customerName");
+
+    if (name) {
+      const nameField = Array.from(inputs).find(i => i.type === "text");
+      if (nameField) nameField.value = name;
+    }
+    if (email) {
+      const emailField = Array.from(inputs).find(i => i.type === "email");
+      if (emailField) emailField.value = email;
+    }
+    if (phone) {
+      const phoneField = Array.from(inputs).find(i => i.type === "tel");
+      if (phoneField) phoneField.value = phone;
+    }
+
+    document.getElementById("feedbackForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const data = {};
+      inputs.forEach(input => {
+        if ((input.type !== "radio" && input.value) ||
+            (input.type === "radio" && input.checked)) {
+          const key = input.name || input.id || input.placeholder || input.type;
+          data[key] = input.value.trim();
+        }
+      });
+
+      await db.feedbacks.add(data);
+      alert("Thank you! Your feedback has been saved.");
+      window.location.href = "index.html";
+
+      localStorage.removeItem("customerName");
+      localStorage.removeItem("customerEmail");
+      localStorage.removeItem("customerPhone");
+
+      this.reset();
+    });
+  });
+  </script>
+ </body>
+</html>
